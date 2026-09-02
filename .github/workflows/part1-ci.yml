@@ -1,4 +1,4 @@
- Part 1 Documentation 
+name: Part 1 Documentation Check
 
 on:
   push:
