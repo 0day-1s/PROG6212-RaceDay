@@ -32,7 +32,7 @@ A GitHub Actions workflow (`.github/workflows/part1-ci.yml`) validates the repos
 
 **Successful green build:**
 
-_[Insert CI/CD green build screenshot here]_
+   ![CI/CD green build](docs/screenshots/ci-success.png)
 
 ## Video Demonstration
  YouTube link: 
