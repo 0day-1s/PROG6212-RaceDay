@@ -35,4 +35,4 @@ A GitHub Actions workflow (`.github/workflows/part1-ci.yml`) validates the repos
    ![CI/CD green build](docs/screenshots/ci-success.png)
 
 ## Video Demonstration
- YouTube link: 
+ YouTube link: https://youtu.be/FdBuXrbSOjo
