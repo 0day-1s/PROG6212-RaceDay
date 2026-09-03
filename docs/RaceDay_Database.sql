@@ -158,4 +158,4 @@ INSERT INTO dbo.Results (EnrolmentID, FinishTime, FinishPosition, TotalFinishers
 (1, '00:52:14', 47, 312, 1),
 (4, '01:10:05', 12, 88, 2);
 GO
-SELECT * FROM dbo.Events;
+SELECT * FROM dbo.Events; 
