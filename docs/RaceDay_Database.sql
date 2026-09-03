@@ -5,7 +5,7 @@
 
 -- ================================================================
 
--- Drop existing objects if re-running this script on a non-clean DB (safe to skip on first run)
+-- Drop existing objects if re-running this script on a non-clean DB 
 IF OBJECT_ID('dbo.Results', 'U') IS NOT NULL DROP TABLE dbo.Results;
 IF OBJECT_ID('dbo.Enrolments', 'U') IS NOT NULL DROP TABLE dbo.Enrolments;
 IF OBJECT_ID('dbo.Categories', 'U') IS NOT NULL DROP TABLE dbo.Categories;
@@ -78,7 +78,7 @@ GO
 -- ================================================================
 -- TABLE: Enrolments
 -- Associative entity resolving the many-to-many between
--- Participants (Users) and Events, via a selected Category.
+-- Participants Users and Events, via a selected Category.
 -- ================================================================
 CREATE TABLE dbo.Enrolments (
     EnrolmentID     INT IDENTITY(1,1) PRIMARY KEY,
@@ -129,7 +129,7 @@ INSERT INTO dbo.Venues (VenueName, AddressLine, City, Province) VALUES
 ('Comrades Marathon Route Start', '2 Old Fort Road', 'Pietermaritzburg', 'KwaZulu-Natal');
 GO
 
--- Events: 3 Events (2 by Organiser 1, 1 by Organiser 2)
+-- Events: 3 Events 2 by Organiser 1, 1 by Organiser 2
 INSERT INTO dbo.Events (EventName, Description, EventDate, EventType, Distance, OrganiserID, VenueID) VALUES
 ('Cape Town Spring Fun Run', 'A scenic community fun run through Kirstenbosch.', '2026-10-18', 'Run', 10.00, 1, 1),
 ('Pretoria Charity Walk', 'A family-friendly charity walk supporting local schools.', '2026-11-02', 'Walk', 5.00, 1, 2),
@@ -158,3 +158,4 @@ INSERT INTO dbo.Results (EnrolmentID, FinishTime, FinishPosition, TotalFinishers
 (1, '00:52:14', 47, 312, 1),
 (4, '01:10:05', 12, 88, 2);
 GO
+SELECT * FROM dbo.Events;
