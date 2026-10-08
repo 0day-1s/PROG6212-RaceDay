@@ -1,7 +1,9 @@
 ﻿namespace RaceDay.API.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class AppUser
 {
+    [Key]
     public int UserId { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
