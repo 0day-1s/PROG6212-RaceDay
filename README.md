@@ -129,8 +129,8 @@ A GitHub Actions workflow (`.github/workflows/part2-ci.yml`) runs on every push:
 
 **Successful green build:**
 
-![Part 2 CI/CD Success](docs/Screenshots/Part2_CI_Success.png)
+![Part 2 CI/CD Success]
 
 ## Video Demonstration
-Unlisted YouTube link: `[INSERT PART 2 YOUTUBE LINK HERE]`
+Unlisted YouTube link: `https://youtu.be/U529C11F6vg`
 
