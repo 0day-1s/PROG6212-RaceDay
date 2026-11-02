@@ -126,3 +126,11 @@ public class ResultDto
     public int? TotalFinishers { get; set; }
     public int CapturedBy { get; set; }
 }
+
+public class VenueDto
+{
+    public int VenueId { get; set; }
+    public string VenueName { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
+    public string Province { get; set; } = string.Empty;
+}
