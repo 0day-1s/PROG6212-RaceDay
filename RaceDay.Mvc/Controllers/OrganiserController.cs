@@ -116,4 +116,80 @@ public class OrganiserController : Controller
         TempData["Success"] = "Event created successfully.";
         return RedirectToAction(nameof(Events));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> EditEvent(int id)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var response = await _api.SendAsync(HttpMethod.Get, $"api/events/{id}");
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        var e = await _api.ReadAsync<EventDto>(response);
+        if (e == null)
+        {
+            TempData["Error"] = "That event could not be found.";
+            return RedirectToAction(nameof(Events));
+        }
+
+        var vm = new EventFormVm
+        {
+            EventId = e.EventId,
+            EventName = e.EventName,
+            Description = e.Description,
+            EventDate = e.EventDate,
+            EventType = e.EventType,
+            Distance = e.Distance,
+            VenueId = e.VenueId
+        };
+
+        return View("CreateEvent", await LoadVenuesAsync(vm));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditEvent(int id, EventFormVm vm)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        vm.EventId = id;
+        if (!ModelState.IsValid) return View("CreateEvent", await LoadVenuesAsync(vm));
+
+        var request = new UpdateEventRequest
+        {
+            EventName = vm.EventName,
+            Description = vm.Description,
+            EventDate = vm.EventDate,
+            EventType = vm.EventType,
+            Distance = vm.Distance,
+            VenueId = vm.VenueId
+        };
+
+        var response = await _api.SendAsync(HttpMethod.Put, $"api/events/{id}", request);
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            ModelState.AddModelError("", await RaceDayApiClient.ReadErrorAsync(response));
+            return View("CreateEvent", await LoadVenuesAsync(vm));
+        }
+
+        TempData["Success"] = "Event updated successfully.";
+        return RedirectToAction(nameof(Events));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteEvent(int id)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var response = await _api.SendAsync(HttpMethod.Delete, $"api/events/{id}");
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        if (response.IsSuccessStatusCode)
+            TempData["Success"] = "Event deleted.";
+        else
+            TempData["Error"] = await RaceDayApiClient.ReadErrorAsync(response);
+
+        return RedirectToAction(nameof(Events));
+    }
 }

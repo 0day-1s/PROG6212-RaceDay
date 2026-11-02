@@ -1,12 +1,13 @@
 ﻿@model RaceDay.Mvc.ViewModels.EventFormVm
 @{
-    ViewData["Title"] = "Create event";
+    var isEdit = Model.EventId != 0;
+    ViewData["Title"] = isEdit ? "Edit event" : "Create event";
 }
 
 <div class="row justify-content-center">
     <div class="col-md-7">
-        <h1 class="mb-3">Create event</h1>
-        <form asp-action="CreateEvent" method="post">
+        <h1 class="mb-3">@(isEdit ? "Edit event" : "Create event")</h1>
+        <form asp-action="@(isEdit ? "EditEvent" : "CreateEvent")" asp-route-id="@(isEdit ? Model.EventId : (int?)null)" method="post">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
             <div class="mb-3">
@@ -55,7 +56,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-success">Create event</button>
+            <button type="submit" class="btn btn-success">@(isEdit ? "Save changes" : "Create event")</button>
             <a asp-action="Events" class="btn btn-link">Cancel</a>
         </form>
     </div>

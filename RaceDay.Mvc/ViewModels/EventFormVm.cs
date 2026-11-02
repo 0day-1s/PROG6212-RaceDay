@@ -7,6 +7,8 @@ namespace RaceDay.Mvc.ViewModels;
 public class EventFormVm
 {
     [Required, Display(Name = "Event name")]
+
+    public int EventId { get; set; }
     public string EventName { get; set; } = string.Empty;
 
     public string? Description { get; set; }
