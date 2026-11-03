@@ -1,0 +1,52 @@
+﻿@model RaceDay.Mvc.ViewModels.ParticipantEventsVm
+@{
+    ViewData["Title"] = "Upcoming events";
+}
+
+<h1 class="mb-3">Upcoming events</h1>
+
+<form method="get" asp-action="Index" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input name="search" value="@Model.Search" class="form-control" placeholder="Search by name, description or venue" />
+    </div>
+    <div class="col-md-3">
+        <select name="type" class="form-select">
+            <option value="">All types</option>
+            <option value="Run" selected="@(Model.Type == "Run")">Run</option>
+            <option value="Walk" selected="@(Model.Type == "Walk")">Walk</option>
+            <option value="Cycle" selected="@(Model.Type == "Cycle")">Cycle</option>
+        </select>
+    </div>
+    <div class="col-md-2"><button type="submit" class="btn btn-success w-100">Filter</button></div>
+    <div class="col-md-2"><a asp-action="Index" class="btn btn-outline-secondary w-100">Clear</a></div>
+</form>
+
+@if (!Model.Events.Any())
+{
+    <div class="alert alert-info">No upcoming events match your search.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var e in Model.Events)
+        {
+            <div class="col-md-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrWhiteSpace(e.BannerImageUrl))
+                    {
+                        <img src="@e.BannerImageUrl" class="card-img-top" alt="@e.EventName banner" style="height:180px;object-fit:cover" />
+                    }
+                    <div class="card-body">
+                        <span class="badge bg-success mb-2">@e.EventType</span>
+                        <h2 class="h5">@e.EventName</h2>
+                        <p class="text-muted mb-1">@e.EventDate.ToString("dd MMM yyyy") &middot; @e.Distance km</p>
+                        <p class="text-muted mb-0">@Model.VenueNames.GetValueOrDefault(e.VenueId, "")</p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a asp-action="Details" asp-route-id="@e.EventId" class="btn btn-sm btn-success">View details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

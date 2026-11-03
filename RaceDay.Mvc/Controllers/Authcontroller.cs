@@ -72,7 +72,11 @@ public class AuthController : Controller
         HttpContext.Session.SetString("Role", auth.Role);
         HttpContext.Session.SetString("DisplayName", auth.FirstName);
 
-        return RedirectToAction("Index", "Home");
+        // Send each role to its own landing page.
+        if (auth.Role.Equals("Organiser", StringComparison.OrdinalIgnoreCase))
+            return RedirectToAction("Index", "Organiser");
+
+        return RedirectToAction("Index", "Participant");
     }
 
     [HttpPost]

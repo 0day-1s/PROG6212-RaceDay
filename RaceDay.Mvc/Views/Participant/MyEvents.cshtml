@@ -1,0 +1,35 @@
+﻿@model List<RaceDay.Contracts.EnrolmentDto>
+@{
+    ViewData["Title"] = "My events";
+}
+
+<h1 class="mb-3">My events</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        You have not entered any events yet. <a asp-action="Index">Browse upcoming events</a>.
+    </div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr><th>Event</th><th>Date</th><th>Category</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var en in Model)
+            {
+                <tr>
+                    <td>@en.EventName</td>
+                    <td>@(en.EventDate?.ToString("dd MMM yyyy"))</td>
+                    <td>@en.CategoryName</td>
+                    <td><partial name="_StatusBadge" model="en.EnrolmentStatus" /></td>
+                    <td class="text-end">
+                        <a asp-action="Details" asp-route-id="@en.EventId" class="btn btn-sm btn-outline-secondary">View event</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
