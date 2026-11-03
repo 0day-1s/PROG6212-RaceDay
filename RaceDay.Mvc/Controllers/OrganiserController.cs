@@ -43,7 +43,7 @@ public class OrganiserController : Controller
         var vm = new OrganiserDashboardVm();
         foreach (var e in events.OrderBy(e => e.EventDate))
         {
-            var enrolResponse = await _api.SendAsync(HttpMethod.Get, $"api/events/{e.EventId}/enrolments");
+            var enrolResponse = await _api.SendAsync(HttpMethod.Get, $"api/enrolments/event/{e.EventId}");
             var enrolments = await _api.ReadAsync<List<EnrolmentDto>>(enrolResponse) ?? new();
 
             vm.Events.Add(new OrganiserEventSummaryVm
@@ -191,5 +191,116 @@ public class OrganiserController : Controller
             TempData["Error"] = await RaceDayApiClient.ReadErrorAsync(response);
 
         return RedirectToAction(nameof(Events));
+    }
+
+
+    public async Task<IActionResult> Categories(int eventId)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var eventResponse = await _api.SendAsync(HttpMethod.Get, $"api/events/{eventId}");
+        var expired = SessionExpired(eventResponse); if (expired != null) return expired;
+
+        var ev = await _api.ReadAsync<EventDto>(eventResponse);
+        if (ev == null)
+        {
+            TempData["Error"] = "That event could not be found.";
+            return RedirectToAction(nameof(Events));
+        }
+
+        var response = await _api.SendAsync(HttpMethod.Get, $"api/events/{eventId}/categories");
+        var categories = await _api.ReadAsync<List<CategoryDto>>(response) ?? new();
+
+        return View(new CategoriesPageVm
+        {
+            EventId = eventId,
+            EventName = ev.EventName,
+            Categories = categories
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddCategory(int eventId, string categoryName, string? description)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        if (string.IsNullOrWhiteSpace(categoryName))
+        {
+            TempData["Error"] = "Category name is required.";
+            return RedirectToAction(nameof(Categories), new { eventId });
+        }
+
+        var response = await _api.SendAsync(HttpMethod.Post, $"api/events/{eventId}/categories",
+            new CreateCategoryRequest { CategoryName = categoryName, Description = description });
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        if (response.IsSuccessStatusCode)
+            TempData["Success"] = "Category added.";
+        else
+            TempData["Error"] = await RaceDayApiClient.ReadErrorAsync(response);
+
+        return RedirectToAction(nameof(Categories), new { eventId });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> EditCategory(int id, int eventId)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var response = await _api.SendAsync(HttpMethod.Get, $"api/events/{eventId}/categories");
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        var categories = await _api.ReadAsync<List<CategoryDto>>(response) ?? new();
+        var category = categories.FirstOrDefault(c => c.CategoryId == id);
+        if (category == null)
+        {
+            TempData["Error"] = "That category could not be found.";
+            return RedirectToAction(nameof(Categories), new { eventId });
+        }
+
+        return View(new CategoryFormVm
+        {
+            CategoryId = category.CategoryId,
+            EventId = eventId,
+            CategoryName = category.CategoryName,
+            Description = category.Description
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditCategory(CategoryFormVm vm)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        if (!ModelState.IsValid) return View(vm);
+
+        var response = await _api.SendAsync(HttpMethod.Put, $"api/categories/{vm.CategoryId}",
+            new CreateCategoryRequest { CategoryName = vm.CategoryName, Description = vm.Description });
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            ModelState.AddModelError("", await RaceDayApiClient.ReadErrorAsync(response));
+            return View(vm);
+        }
+
+        TempData["Success"] = "Category updated.";
+        return RedirectToAction(nameof(Categories), new { eventId = vm.EventId });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteCategory(int id, int eventId)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var response = await _api.SendAsync(HttpMethod.Delete, $"api/categories/{id}");
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        if (response.IsSuccessStatusCode)
+            TempData["Success"] = "Category deleted.";
+        else
+            TempData["Error"] = await RaceDayApiClient.ReadErrorAsync(response);
+
+        return RedirectToAction(nameof(Categories), new { eventId });
     }
 }

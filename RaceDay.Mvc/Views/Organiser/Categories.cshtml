@@ -1,0 +1,54 @@
+﻿@model RaceDay.Mvc.ViewModels.CategoriesPageVm
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<a asp-action="Events" class="btn btn-link ps-0">&larr; Back to events</a>
+<h1 class="mb-1">Categories</h1>
+<p class="text-muted">@Model.EventName</p>
+
+@if (!Model.Categories.Any())
+{
+    <div class="alert alert-info">This event has no categories yet. Add one below.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead><tr><th>Name</th><th>Description</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+            @foreach (var c in Model.Categories)
+            {
+                <tr>
+                    <td>@c.CategoryName</td>
+                    <td>@c.Description</td>
+                    <td class="text-end">
+                        <a asp-action="EditCategory" asp-route-id="@c.CategoryId" asp-route-eventId="@Model.EventId"
+                           class="btn btn-sm btn-outline-primary">Edit</a>
+                        <form asp-action="DeleteCategory" asp-route-id="@c.CategoryId" asp-route-eventId="@Model.EventId"
+                              method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this category?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h2 class="h5">Add a category</h2>
+        <form asp-action="AddCategory" asp-route-eventId="@Model.EventId" method="post" class="row g-2">
+            <div class="col-md-4">
+                <input name="categoryName" class="form-control" placeholder="e.g. 10km Run" required />
+            </div>
+            <div class="col-md-6">
+                <input name="description" class="form-control" placeholder="Description (optional)" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Add</button>
+            </div>
+        </form>
+    </div>
+</div>

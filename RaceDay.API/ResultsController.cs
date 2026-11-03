@@ -78,7 +78,6 @@ namespace RaceDay.API
             var participantId = HttpContext.Session.GetInt32("UserId")!.Value;
 
             var results = await _context.Results
-                .Include(r => r.Enrolment)
                 .Where(r => r.Enrolment.ParticipantId == participantId)
                 .Select(r => new ResultDto
                 {
@@ -87,7 +86,12 @@ namespace RaceDay.API
                     FinishTime = r.FinishTime,
                     FinishPosition = r.FinishPosition,
                     TotalFinishers = r.TotalFinishers,
-                    CapturedBy = r.CapturedBy
+                    CapturedBy = r.CapturedBy,
+                    EventName = r.Enrolment.Event.EventName,
+                    EventDate = r.Enrolment.Event.EventDate,
+                    CategoryName = _context.Categories
+                        .Where(c => c.CategoryId == r.Enrolment.CategoryId)
+                        .Select(c => c.CategoryName).FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -113,7 +117,6 @@ namespace RaceDay.API
             }
 
             var results = await _context.Results
-                .Include(r => r.Enrolment)
                 .Where(r => r.Enrolment.EventId == eventId)
                 .Select(r => new ResultDto
                 {
@@ -122,7 +125,15 @@ namespace RaceDay.API
                     FinishTime = r.FinishTime,
                     FinishPosition = r.FinishPosition,
                     TotalFinishers = r.TotalFinishers,
-                    CapturedBy = r.CapturedBy
+                    CapturedBy = r.CapturedBy,
+                    EventName = r.Enrolment.Event.EventName,
+                    EventDate = r.Enrolment.Event.EventDate,
+                    CategoryName = _context.Categories
+                        .Where(c => c.CategoryId == r.Enrolment.CategoryId)
+                        .Select(c => c.CategoryName).FirstOrDefault(),
+                    ParticipantName = _context.Users
+                        .Where(u => u.UserId == r.Enrolment.ParticipantId)
+                        .Select(u => u.FirstName + " " + u.LastName).FirstOrDefault()
                 })
                 .ToListAsync();
 

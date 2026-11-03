@@ -29,6 +29,7 @@ else
                     <td>@e.Distance km</td>
                     <td>@(venueNames.TryGetValue(e.VenueId, out var vn) ? vn : "-")</td>
                     <td class="text-end">
+                        <a asp-action="Categories" asp-route-eventId="@e.EventId" class="btn btn-sm btn-outline-secondary">Categories</a>
                         <a asp-action="EditEvent" asp-route-id="@e.EventId" class="btn btn-sm btn-outline-primary">Edit</a>
                         <form asp-action="DeleteEvent" asp-route-id="@e.EventId" method="post" class="d-inline"
                               onsubmit="return confirm('Delete this event? This cannot be undone.');">

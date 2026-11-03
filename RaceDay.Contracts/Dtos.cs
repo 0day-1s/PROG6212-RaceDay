@@ -106,6 +106,10 @@ public class EnrolmentDto
     public int CategoryId { get; set; }
     public DateTime EnrolmentDate { get; set; }
     public string EnrolmentStatus { get; set; } = string.Empty;
+    public string? ParticipantName { get; set; }
+    public string? EventName { get; set; }
+    public DateTime? EventDate { get; set; }
+    public string? CategoryName { get; set; }
 }
 
 
@@ -125,6 +129,10 @@ public class ResultDto
     public int FinishPosition { get; set; }
     public int? TotalFinishers { get; set; }
     public int CapturedBy { get; set; }
+    public string? ParticipantName { get; set; }
+    public string? EventName { get; set; }
+    public DateTime? EventDate { get; set; }
+    public string? CategoryName { get; set; }
 }
 
 public class VenueDto

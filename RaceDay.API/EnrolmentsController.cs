@@ -85,7 +85,12 @@ namespace RaceDay.API
                     EventId = en.EventId,
                     CategoryId = en.CategoryId,
                     EnrolmentDate = en.EnrolmentDate,
-                    EnrolmentStatus = en.EnrolmentStatus
+                    EnrolmentStatus = en.EnrolmentStatus,
+                    EventName = en.Event.EventName,
+                    EventDate = en.Event.EventDate,
+                    CategoryName = _context.Categories
+                        .Where(c => c.CategoryId == en.CategoryId)
+                        .Select(c => c.CategoryName).FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -119,7 +124,15 @@ namespace RaceDay.API
                     EventId = en.EventId,
                     CategoryId = en.CategoryId,
                     EnrolmentDate = en.EnrolmentDate,
-                    EnrolmentStatus = en.EnrolmentStatus
+                    EnrolmentStatus = en.EnrolmentStatus,
+                    EventName = en.Event.EventName,
+                    EventDate = en.Event.EventDate,
+                    CategoryName = _context.Categories
+                        .Where(c => c.CategoryId == en.CategoryId)
+                        .Select(c => c.CategoryName).FirstOrDefault(),
+                    ParticipantName = _context.Users
+                        .Where(u => u.UserId == en.ParticipantId)
+                        .Select(u => u.FirstName + " " + u.LastName).FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -147,9 +160,11 @@ namespace RaceDay.API
                 return StatusCode(403, "You do not own the event this enrolment belongs to.");
             }
 
-            if (request.EnrolmentStatus != "Pending" && request.EnrolmentStatus != "Confirmed")
+            if (request.EnrolmentStatus != "Pending" &&
+                request.EnrolmentStatus != "Confirmed" &&
+                request.EnrolmentStatus != "Cancelled")
             {
-                return BadRequest("Status must be 'Pending' or 'Confirmed'.");
+                return BadRequest("Status must be 'Pending', 'Confirmed' or 'Cancelled'.");
             }
 
             enrolment.EnrolmentStatus = request.EnrolmentStatus;
