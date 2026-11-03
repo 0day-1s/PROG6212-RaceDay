@@ -303,4 +303,121 @@ public class OrganiserController : Controller
 
         return RedirectToAction(nameof(Categories), new { eventId });
     }
+
+
+    private async Task<(List<EventDto> Events, IActionResult? Redirect)> LoadMyEventsAsync()
+    {
+        var response = await _api.SendAsync(HttpMethod.Get, "api/events/mine");
+        var expired = SessionExpired(response);
+        if (expired != null) return (new List<EventDto>(), expired);
+
+        var events = await _api.ReadAsync<List<EventDto>>(response) ?? new();
+        return (events.OrderBy(e => e.EventDate).ToList(), null);
+    }
+
+    public async Task<IActionResult> Enrolments(int? eventId)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var (events, redirect) = await LoadMyEventsAsync();
+        if (redirect != null) return redirect;
+
+        var vm = new EnrolmentsPageVm
+        {
+            Events = events,
+            SelectedEventId = eventId ?? events.FirstOrDefault()?.EventId
+        };
+
+        if (vm.SelectedEventId != null)
+        {
+            var response = await _api.SendAsync(HttpMethod.Get, $"api/enrolments/event/{vm.SelectedEventId}");
+            var expired = SessionExpired(response); if (expired != null) return expired;
+            vm.Enrolments = await _api.ReadAsync<List<EnrolmentDto>>(response) ?? new();
+        }
+
+        return View(vm);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SetEnrolmentStatus(int id, int eventId, string status)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var response = await _api.SendAsync(HttpMethod.Put, $"api/enrolments/{id}/status",
+            new UpdateEnrolmentStatusRequest { EnrolmentStatus = status });
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        if (response.IsSuccessStatusCode)
+            TempData["Success"] = $"Enrolment marked as {status}.";
+        else
+            TempData["Error"] = await RaceDayApiClient.ReadErrorAsync(response);
+
+        return RedirectToAction(nameof(Enrolments), new { eventId });
+    }
+
+    public async Task<IActionResult> Results(int? eventId)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var (events, redirect) = await LoadMyEventsAsync();
+        if (redirect != null) return redirect;
+
+        var vm = new ResultsPageVm
+        {
+            Events = events,
+            SelectedEventId = eventId ?? events.FirstOrDefault()?.EventId
+        };
+
+        if (vm.SelectedEventId != null)
+        {
+            var enrolResponse = await _api.SendAsync(HttpMethod.Get, $"api/enrolments/event/{vm.SelectedEventId}");
+            var expired = SessionExpired(enrolResponse); if (expired != null) return expired;
+            var enrolments = await _api.ReadAsync<List<EnrolmentDto>>(enrolResponse) ?? new();
+
+            var resultResponse = await _api.SendAsync(HttpMethod.Get, $"api/results/event/{vm.SelectedEventId}");
+            vm.Results = (await _api.ReadAsync<List<ResultDto>>(resultResponse) ?? new())
+                .OrderBy(r => r.FinishPosition).ToList();
+
+            var done = vm.Results.Select(r => r.EnrolmentId).ToHashSet();
+            vm.Awaiting = enrolments
+                .Where(en => en.EnrolmentStatus != "Cancelled" && !done.Contains(en.EnrolmentId))
+                .ToList();
+        }
+
+        return View(vm);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CaptureResult(int eventId, int enrolmentId, string finishTime, int finishPosition)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        if (!TimeSpan.TryParse(finishTime, System.Globalization.CultureInfo.InvariantCulture, out var time)
+            || time <= TimeSpan.Zero)
+        {
+            TempData["Error"] = "Enter the finish time as hh:mm:ss, for example 00:45:30.";
+            return RedirectToAction(nameof(Results), new { eventId });
+        }
+
+        if (finishPosition < 1)
+        {
+            TempData["Error"] = "Finishing position must be 1 or higher.";
+            return RedirectToAction(nameof(Results), new { eventId });
+        }
+
+        var response = await _api.SendAsync(HttpMethod.Post, "api/results", new CreateResultRequest
+        {
+            EnrolmentId = enrolmentId,
+            FinishTime = time,
+            FinishPosition = finishPosition
+        });
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        if (response.IsSuccessStatusCode)
+            TempData["Success"] = "Result captured.";
+        else
+            TempData["Error"] = await RaceDayApiClient.ReadErrorAsync(response);
+
+        return RedirectToAction(nameof(Results), new { eventId });
+    }
 }
