@@ -127,4 +127,67 @@ public class ParticipantController : Controller
 
         return View(enrolments.OrderBy(en => en.EventDate).ToList());
     }
+
+
+    public async Task<IActionResult> MyResults()
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var response = await _api.SendAsync(HttpMethod.Get, "api/results/mine");
+        var expired = SessionExpired(response); if (expired != null) return expired;
+        var results = await _api.ReadAsync<List<ResultDto>>(response) ?? new();
+
+        return View(results.OrderByDescending(r => r.EventDate).ToList());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Profile()
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        var response = await _api.SendAsync(HttpMethod.Get, "api/profile/me");
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        var p = await _api.ReadAsync<ProfileDto>(response);
+        if (p == null)
+        {
+            TempData["Error"] = "Your profile could not be loaded.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(new ProfileVm
+        {
+            Email = p.Email,
+            Role = p.Role,
+            FirstName = p.FirstName,
+            LastName = p.LastName,
+            PhoneNumber = p.PhoneNumber
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Profile(ProfileVm vm)
+    {
+        var guard = Guard(); if (guard != null) return guard;
+
+        if (!ModelState.IsValid) return View(vm);
+
+        var response = await _api.SendAsync(HttpMethod.Put, "api/profile/me", new UpdateProfileRequest
+        {
+            FirstName = vm.FirstName,
+            LastName = vm.LastName,
+            PhoneNumber = vm.PhoneNumber
+        });
+        var expired = SessionExpired(response); if (expired != null) return expired;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            ModelState.AddModelError("", await RaceDayApiClient.ReadErrorAsync(response));
+            return View(vm);
+        }
+
+        HttpContext.Session.SetString("DisplayName", vm.FirstName);
+        TempData["Success"] = "Profile updated.";
+        return RedirectToAction(nameof(Profile));
+    }
 }
