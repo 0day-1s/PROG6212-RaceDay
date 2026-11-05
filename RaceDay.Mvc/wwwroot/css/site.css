@@ -1,31 +1,215 @@
+/* RaceDay theme */
+:root {
+    --rd-primary: #0e7a4f;
+    --rd-primary-dark: #095c3b;
+    --rd-accent: #f28c28;
+    --rd-dark: #101a2b;
+    --rd-bg: #f4f7f5;
+    --rd-radius: 12px;
+    /* Make Bootstrap's "success" the RaceDay primary */
+    --bs-success: var(--rd-primary);
+    --bs-success-rgb: 14, 122, 79;
+    --bs-link-color: var(--rd-primary);
+    --bs-link-hover-color: var(--rd-primary-dark);
+}
+
 html {
-  font-size: 14px;
+    font-size: 15px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    background: var(--rd-bg);
+    color: #1c2733;
+    margin-bottom: 60px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+h1, h2, h3, h4 {
+    font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+h1 {
+    margin-bottom: 1rem;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(90deg, var(--rd-dark), #17283f) !important;
+    border-bottom: 3px solid var(--rd-accent);
+}
+
+.navbar-brand {
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--rd-accent) !important;
+}
+
+.navbar .nav-link {
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+    .navbar .nav-link:hover,
+    .navbar .nav-link:focus {
+        opacity: 1;
+        color: #fff !important;
+    }
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-success {
+    --bs-btn-bg: var(--rd-primary);
+    --bs-btn-border-color: var(--rd-primary);
+    --bs-btn-hover-bg: var(--rd-primary-dark);
+    --bs-btn-hover-border-color: var(--rd-primary-dark);
+    --bs-btn-active-bg: var(--rd-primary-dark);
+    --bs-btn-active-border-color: var(--rd-primary-dark);
+    --bs-btn-disabled-bg: var(--rd-primary);
+    --bs-btn-disabled-border-color: var(--rd-primary);
+}
+
+.btn-outline-success {
+    --bs-btn-color: var(--rd-primary);
+    --bs-btn-border-color: var(--rd-primary);
+    --bs-btn-hover-bg: var(--rd-primary);
+    --bs-btn-hover-border-color: var(--rd-primary);
+    --bs-btn-active-bg: var(--rd-primary-dark);
+    --bs-btn-active-border-color: var(--rd-primary-dark);
+}
+
+/* Cards*/
+.card {
+    border: 1px solid #e3e9e5;
+    border-radius: var(--rd-radius);
+    box-shadow: 0 1px 3px rgba(16, 26, 43, 0.06);
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 26, 43, 0.1);
+    }
+
+.card-img-top {
+    border-radius: 0;
+}
+
+.card-footer {
+    border-top: 1px solid #eef2ef;
+}
+
+/*  Badges */
+.badge {
+    border-radius: 999px;
+    padding: 0.4em 0.75em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+    .badge.bg-success {
+        background-color: var(--rd-primary) !important;
+    }
+
+    .badge.bg-warning {
+        color: #3a2a00 !important;
+    }
+
+/* Tables */
+.table {
+    background: #fff;
+    border-radius: var(--rd-radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(16, 26, 43, 0.06);
+}
+
+    .table thead th {
+        background: var(--rd-dark);
+        color: #fff;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border: 0;
+    }
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-bg-type: #f7faf8;
+}
+
+.table tbody tr:hover > * {
+    --bs-table-bg-state: #eaf4ee;
+}
+
+/* Forms*/
+.form-control, .form-select {
+    border-radius: 8px;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--rd-primary);
+        box-shadow: 0 0 0 0.2rem rgba(14, 122, 79, 0.2);
+    }
+
+.form-label {
+    font-weight: 600;
+}
+
+/* Alerts */
+.alert {
+    border-radius: var(--rd-radius);
+    border: 0;
+}
+
+.alert-success {
+    background: #def3e8;
+    color: #0b4f33;
+}
+
+.alert-danger {
+    background: #fbe3e3;
+    color: #7a1f1f;
+}
+
+.alert-info {
+    background: #e3f0fb;
+    color: #174a73;
+}
+
+/*  Footer */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    line-height: 60px;
+    background: #fff;
+}
+
+/* Small screens */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .navbar .btn {
+        margin-top: 0.5rem;
+    }
 }
