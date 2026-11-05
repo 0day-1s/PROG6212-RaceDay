@@ -161,7 +161,8 @@ public class ParticipantController : Controller
             Role = p.Role,
             FirstName = p.FirstName,
             LastName = p.LastName,
-            PhoneNumber = p.PhoneNumber
+            PhoneNumber = p.PhoneNumber,
+            ProfileImageUrl = p.ProfileImageUrl
         });
     }
 

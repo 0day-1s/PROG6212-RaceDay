@@ -1,0 +1,31 @@
+﻿@model RaceDay.Contracts.EventDto
+@{
+    ViewData["Title"] = "Event banner";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="mb-1">Event banner</h1>
+        <p class="text-muted">@Model.EventName</p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.BannerImageUrl))
+        {
+            <img src="@Url.Action("Show", "Images", new { url = Model.BannerImageUrl })"
+                 alt="@Model.EventName banner" class="img-fluid rounded mb-3" />
+        }
+        else
+        {
+            <div class="alert alert-info">No banner uploaded yet.</div>
+        }
+
+        <form asp-action="Banner" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="eventId" value="@Model.EventId" />
+            <div class="mb-3">
+                <label class="form-label">Choose a banner (JPG, PNG, WEBP or GIF, max 5 MB)</label>
+                <input type="file" name="banner" class="form-control" accept="image/*" required />
+            </div>
+            <button type="submit" class="btn btn-success">Upload banner</button>
+            <a asp-controller="Organiser" asp-action="Events" class="btn btn-outline-secondary">Back to events</a>
+        </form>
+    </div>
+</div>

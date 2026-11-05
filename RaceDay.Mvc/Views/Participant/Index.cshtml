@@ -34,7 +34,7 @@ else
                 <div class="card h-100">
                     @if (!string.IsNullOrWhiteSpace(e.BannerImageUrl))
                     {
-                        <img src="@e.BannerImageUrl" class="card-img-top" alt="@e.EventName banner" style="height:180px;object-fit:cover" />
+                        <img src="@Url.Action("Show", "Images", new { url = e.BannerImageUrl })" class="card-img-top" alt="@e.EventName banner" style="height:180px;object-fit:cover" />
                     }
                     <div class="card-body">
                         <span class="badge bg-success mb-2">@e.EventType</span>

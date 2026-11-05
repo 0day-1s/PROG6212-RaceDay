@@ -17,18 +17,30 @@ else
 {
     <table class="table table-striped align-middle">
         <thead>
-            <tr><th>Name</th><th>Date</th><th>Type</th><th>Distance</th><th>Venue</th><th class="text-end">Actions</th></tr>
+            <tr><th>Banner</th><th>Name</th><th>Date</th><th>Type</th><th>Distance</th><th>Venue</th><th class="text-end">Actions</th></tr>
         </thead>
         <tbody>
             @foreach (var e in Model)
             {
                 <tr>
+                    <td style="width:90px">
+                        @if (!string.IsNullOrWhiteSpace(e.BannerImageUrl))
+                        {
+                            <img src="@Url.Action("Show", "Images", new { url = e.BannerImageUrl })" alt="@e.EventName banner"
+                                 class="rounded" style="width:80px;height:50px;object-fit:cover" />
+                        }
+                        else
+                        {
+                            <span class="text-muted small">None</span>
+                        }
+                    </td>
                     <td>@e.EventName</td>
                     <td>@e.EventDate.ToString("dd MMM yyyy")</td>
                     <td>@e.EventType</td>
                     <td>@e.Distance km</td>
                     <td>@(venueNames.TryGetValue(e.VenueId, out var vn) ? vn : "-")</td>
                     <td class="text-end">
+                        <a asp-controller="Media" asp-action="Banner" asp-route-eventId="@e.EventId" class="btn btn-sm btn-outline-success">Banner</a>
                         <a asp-action="Categories" asp-route-eventId="@e.EventId" class="btn btn-sm btn-outline-secondary">Categories</a>
                         <a asp-action="EditEvent" asp-route-id="@e.EventId" class="btn btn-sm btn-outline-primary">Edit</a>
                         <form asp-action="DeleteEvent" asp-route-id="@e.EventId" method="post" class="d-inline"

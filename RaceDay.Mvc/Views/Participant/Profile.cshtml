@@ -6,10 +6,33 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <h1 class="mb-3">My profile</h1>
+
+        <div class="d-flex align-items-center mb-4">
+            @if (!string.IsNullOrWhiteSpace(Model.ProfileImageUrl))
+            {
+                <img src="@Url.Action("Show", "Images", new { url = Model.ProfileImageUrl })"
+                     alt="Profile picture" class="rounded-circle me-3"
+                     style="width:96px;height:96px;object-fit:cover;" />
+            }
+            else
+            {
+                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3"
+                     style="width:96px;height:96px;font-size:2rem;">
+                    @Model.FirstName.FirstOrDefault()
+                </div>
+            }
+
+            <form asp-controller="Media" asp-action="UploadProfilePicture" method="post" enctype="multipart/form-data">
+                <input type="file" name="picture" class="form-control form-control-sm mb-2" accept="image/*" required />
+                <button type="submit" class="btn btn-sm btn-outline-success">Upload picture</button>
+            </form>
+        </div>
+
         <form asp-action="Profile" method="post">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             <input type="hidden" asp-for="Email" />
             <input type="hidden" asp-for="Role" />
+            <input type="hidden" asp-for="ProfileImageUrl" />
 
             <div class="mb-3">
                 <label class="form-label">Email</label>

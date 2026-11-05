@@ -9,7 +9,7 @@
     <div class="col-md-8">
         @if (!string.IsNullOrWhiteSpace(Model.Event.BannerImageUrl))
         {
-            <img src="@Model.Event.BannerImageUrl" alt="@Model.Event.EventName banner" class="img-fluid rounded mb-3" />
+            <img src="@Url.Action("Show", "Images", new { url = Model.Event.BannerImageUrl })" alt="@Model.Event.EventName banner" class="img-fluid rounded mb-3" />
         }
         <span class="badge bg-success mb-2">@Model.Event.EventType</span>
         <h1>@Model.Event.EventName</h1>
