@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.git/
+**/*.user
+**/*.bak
+**/secrets.json
+.github/
+docs/
+RaceDay.API/
+RaceDay.API.Tests/
