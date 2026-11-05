@@ -36,7 +36,8 @@ namespace RaceDay.API
                 LastName = user.LastName,
                 Email = user.Email,
                 Role = user.Role,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                ProfileImageUrl = user.ProfileImageUrl
             };
 
             return Ok(dto);

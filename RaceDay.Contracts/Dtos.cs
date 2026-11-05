@@ -7,7 +7,7 @@ public class RegisterRequest
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-    public string Role { get; set; } = string.Empty; 
+    public string Role { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
 }
 
@@ -35,6 +35,7 @@ public class ProfileDto
     public string Email { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
+    public string? ProfileImageUrl { get; set; }
 }
 
 public class UpdateProfileRequest
@@ -50,7 +51,7 @@ public class CreateEventRequest
     public string EventName { get; set; } = string.Empty;
     public string? Description { get; set; }
     public DateTime EventDate { get; set; }
-    public string EventType { get; set; } = string.Empty; 
+    public string EventType { get; set; } = string.Empty;
     public decimal Distance { get; set; }
     public int VenueId { get; set; }
 }
@@ -95,7 +96,7 @@ public class CreateEnrolmentRequest
 
 public class UpdateEnrolmentStatusRequest
 {
-    public string EnrolmentStatus { get; set; } = string.Empty; 
+    public string EnrolmentStatus { get; set; } = string.Empty;
 }
 
 public class EnrolmentDto

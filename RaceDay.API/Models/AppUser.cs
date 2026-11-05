@@ -1,4 +1,5 @@
 ﻿namespace RaceDay.API.Models;
+
 using System.ComponentModel.DataAnnotations;
 
 public class AppUser
@@ -11,6 +12,7 @@ public class AppUser
     public string PasswordHash { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty; // "Organiser" or "Participant"
     public string? PhoneNumber { get; set; }
+    public string? ProfileImageUrl { get; set; }
     public DateTime DateRegistered { get; set; } = DateTime.UtcNow;
 
     public ICollection<Event> EventsOrganised { get; set; } = new List<Event>();

@@ -19,6 +19,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddScoped<RaceDay.API.Services.BlobStorageService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
