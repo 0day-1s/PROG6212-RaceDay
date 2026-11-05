@@ -1,0 +1,32 @@
+name: RaceDay CI (Part 3)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore RaceDay.slnx
+
+      - name: Build (API, Contracts, MVC, Tests)
+        run: dotnet build RaceDay.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test RaceDay.slnx --configuration Release --no-build --verbosity normal
+
+      - name: Build MVC Docker image
+        run: docker build -f RaceDay.Mvc/Dockerfile -t raceday-mvc:ci .
