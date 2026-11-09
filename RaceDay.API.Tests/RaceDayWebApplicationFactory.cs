@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RaceDay.API.Data;
 
@@ -16,6 +17,18 @@ public class RaceDayWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        // Fake Blob settings so the upload controller can be created in tests/CI.
+        // No test ever reaches Azure: they stop at auth, ownership or validation checks.
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["AzureBlobStorage:ConnectionString"] =
+                    "DefaultEndpointsProtocol=https;AccountName=testaccount;AccountKey=dGVzdA==;EndpointSuffix=core.windows.net",
+                ["AzureBlobStorage:ContainerName"] = "raceday-images"
+            });
+        });
+
         builder.ConfigureServices(services =>
         {
             var descriptor = services.SingleOrDefault(
