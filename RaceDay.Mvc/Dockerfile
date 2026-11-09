@@ -1,4 +1,4 @@
-# ---- build stage ----
+# build stage
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
@@ -10,7 +10,7 @@ COPY RaceDay.Contracts/ RaceDay.Contracts/
 COPY RaceDay.Mvc/ RaceDay.Mvc/
 RUN dotnet publish RaceDay.Mvc/RaceDay.Mvc.csproj -c Release -o /app/publish --no-restore
 
-# ---- runtime stage ----
+# runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
